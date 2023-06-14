@@ -47,3 +47,56 @@ here -fsSL stands for
   sh stands for shell
 
 here get-docker.sh is the file which we are downloading from the url https://get.docker.com and saving it as get-docker.sh and then we are running the file get-docker.sh'''
+
+
+#Create a WordPress site 
+def create_wordpress_site():
+    #checking if docker is installed or not
+    check_docker_docker_compose()
+    #creating a directory named wordpress
+    os.system("mkdir wordpress")
+    #changing directory to wordpress
+    os.chdir("wordpress")
+    #creating a file named docker-compose.yml
+    os.system("touch docker-compose.yml")
+    #open the file docker-compose.yml
+    f = open("docker-compose.yml", "w")
+    #code for the file docker-compose.yml
+    f.write("version: '3.3'\n")
+    f.write("services:\n")
+    f.write("  db:\n")
+    f.write("    image: mysql:5.7\n")
+    f.write("    volumes:\n")
+    f.write("      - db_data:/var/lib/mysql\n")
+    f.write("    restart: always\n")
+    f.write("    environment:\n")
+    f.write("      MYSQL_ROOT_PASSWORD: somewordpress\n")
+    f.write("      MYSQL_DATABASE: wordpress\n")
+    f.write("      MYSQL_USER: wordpress\n")
+    f.write("      MYSQL_PASSWORD: wordpress\n")
+    f.write("  wordpress:\n")
+    f.write("    depends_on:\n")
+    f.write("      - db\n")
+    f.write("    image: wordpress:latest\n")
+    f.write("    ports:\n")
+    f.write("      - '8000:80'\n")
+    f.write("    restart: always\n")
+    f.write("    environment:\n")
+    f.write("      WORDPRESS_DB_HOST: db:3306\n")
+    f.write("      WORDPRESS_DB_USER: wordpress\n")
+    f.write("      WORDPRESS_DB_PASSWORD: wordpress\n")
+    f.write("volumes:\n")
+    f.write("  db_data: {}\n")
+    #close the file docker-compose.yml
+    f.close()
+    #creating a file named .env to contain all the environments
+    os.system("touch .env")
+    #open the file .env
+    f = open(".env", "w")
+    #write the following code in the file .env
+    f.write("MYSQL_ROOT_PASSWORD=somewordpress\n")
+    f.write("MYSQL_DATABASE=wordpress\n")
+    f.write("MYSQL_USER=wordpress\n")
+    f.write("MYSQL_PASSWORD=wordpress\n")
+    #close the file .env
+    f.close()
