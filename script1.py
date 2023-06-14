@@ -91,7 +91,24 @@ class create_WordPress_site:
 
         print("WordPress site is now running, access it with http://{}".format(self.siteName))
 
+class EnableDisable_or_DeleteSite:
+    def __init__(self,site_name):
+        self.siteName=site_name
 
+    def enable(self):
+        os.system("sudo docker-compose up -d")
+
+    def disable(self):
+        os.system("sudo docker-compose down")
+
+    def delete(self):
+        os.system("sudo docker-compose down")
+        os.system("sudo sed -i /{}/d /etc/hosts".format(self.siteName))
+
+
+if __name__=="__main__":
+    Check_Docker_and_DockerCompose()
+    create_WordPress_site("example.com")
 
 
 
@@ -207,7 +224,7 @@ def create_wordpress_site():
     print("please open https://{} in your browser to access the site".format(site_name))
 
 
-def enable():
+def create():
     check_docker_docker_compose()
     create_wordpress_site()
 
