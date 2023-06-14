@@ -1,7 +1,8 @@
 #Check if `docker` and `docker-compose` is installed on the system. If not present, install the missing packages.
 
 import os
-
+import argparse
+import webbrowser
 '''
 os module - help us to interact with the OS of the system and perform OS operations like listing directories, manipulating paths, and executing system commands.
 
@@ -27,6 +28,7 @@ class Check_Docker_and_DockerCompose:
             os.system("curl -fsSL https://get.docker.com -o get-docker.sh")
             os.system("sh get-docker.sh")
             print("Docker is installed on the system")
+            os.remove("get-docker.sh")
     #check if docker-compose is installed or not
         if os.system("docker-compose --version") == 0:
             print("Docker-compose is already installed on the system")
@@ -45,7 +47,7 @@ class create_WordPress_site:
         os.system("touch docker-compose.yml")
         f = open("docker-compose.yml", "w")
     
-        f.write("version: '3.3'\n")
+        f.write("version: '3'\n")
         f.write("services:\n")
         f.write("  db:\n")
         f.write("    image: mysql:5.7\n")
@@ -90,6 +92,7 @@ class create_WordPress_site:
             f.write("\n127.0.0.1 {}".format(self.siteName))
 
         print("WordPress site is now running, access it with http://{}".format(self.siteName))
+        webbrowser.open("https://{}/8000")
 
 class EnableDisable_or_DeleteSite:
     def __init__(self,site_name):
@@ -103,12 +106,32 @@ class EnableDisable_or_DeleteSite:
 
     def delete(self):
         os.system("sudo docker-compose down")
+        os.system("sudo rm -rf {}".format(self.siteName))
         os.system("sudo sed -i /{}/d /etc/hosts".format(self.siteName))
 
+def main():
+    parser = argparse.ArgumentParser(description="Create a WordPress site using the latest WordPress Version")
+    parser.add_argument("siteName", help="Site name")
+    parser.add_argument("-c", "--create", help="Create a WordPress site using the latest WordPress Version", action="store_true")
+    parser.add_argument("-e", "--enable", help="Enable the site (start the containers)", action="store_true")
+    parser.add_argument("-d", "--disable", help="Disable the site (stop the containers)", action="store_true")
+    parser.add_argument("-D", "--delete", help="Delete the site (delete the containers and local files)", action="store_true")
+    args = parser.parse_args()
+
+    if args.create:
+        Check_Docker_and_DockerCompose().ispresent()
+        create_WordPress_site(args.siteName).create()
+    elif args.enable:
+        EnableDisable_or_DeleteSite(args.siteName).enable()
+    elif args.disable:
+        EnableDisable_or_DeleteSite(args.siteName).disable()
+    elif args.delete:
+        EnableDisable_or_DeleteSite(args.siteName).delete()
+    else:
+        print("Please provide a subcommand, use -h or --help for help")
 
 if __name__=="__main__":
-    Check_Docker_and_DockerCompose()
-    create_WordPress_site("example.com")
+    main()
 
 
 
@@ -235,7 +258,7 @@ def enable():
 def disable():
     os.system("sudo docker-compose down")
 
-def delete():
+def delete(site_name):
     os.system("sudo docker-compose down")
     os.system("sudo sed -i /{}/d /etc/hosts".format(site_name))#to get we have to make them to global value
 
