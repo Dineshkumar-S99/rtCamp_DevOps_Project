@@ -10,6 +10,104 @@ Why we use it: We use the subprocess module to interact with external programs, 
 It enables us to integrate with the underlying system and perform tasks like running Docker commands, installing packages, or managing system processes.'''
 
 
+
+#Create class to check docker and docker present or not
+
+class Check_Docker_and_DockerCompose:
+    def __init__(self):
+        self.docker="docker"
+        self.docker_compose="docker-compose"
+
+    def ispresent(self):
+        if os.system("docker --version") == 0:
+            print("Docker is already installed on the system")
+        else:
+            print("Docker is not installed on the system")
+            #install docker
+            os.system("curl -fsSL https://get.docker.com -o get-docker.sh")
+            os.system("sh get-docker.sh")
+            print("Docker is installed on the system")
+    #check if docker-compose is installed or not
+        if os.system("docker-compose --version") == 0:
+            print("Docker-compose is already installed on the system")
+        else:
+            print("Docker-compose is not installed on the system")
+            #install docker-compose
+            os.system("sudo apt install docker-compose")
+            print("Docker-compose is installed on the system")
+
+
+class create_WordPress_site:
+    def __init__(self,site_name):
+        self.siteName=site_name
+        os.system("mkdir wordpress")
+        os.chdir("wordpress")
+        os.system("touch docker-compose.yml")
+        f = open("docker-compose.yml", "w")
+    
+        f.write("version: '3.3'\n")
+        f.write("services:\n")
+        f.write("  db:\n")
+        f.write("    image: mysql:5.7\n")
+        f.write("    volumes:\n")
+        f.write("      - db_data:/var/lib/mysql\n")
+        f.write("    restart: always\n")
+        f.write("    environment:\n")
+        f.write("      MYSQL_ROOT_PASSWORD: somewordpress\n")
+        f.write("      MYSQL_DATABASE: wordpress\n")
+        f.write("      MYSQL_USER: wordpress\n")
+        f.write("      MYSQL_PASSWORD: wordpress\n")
+        f.write("  wordpress:\n")
+        f.write("    depends_on:\n")
+        f.write("      - db\n")
+        f.write("    image: wordpress:latest\n")
+        f.write("    ports:\n")
+        f.write("      - '8000:80'\n")
+        f.write("    restart: always\n")
+        f.write("    environment:\n")
+        f.write("      WORDPRESS_DB_HOST: db:3306\n")
+        f.write("      WORDPRESS_DB_USER: wordpress\n")
+        f.write("      WORDPRESS_DB_PASSWORD: wordpress\n")
+        f.write("volumes:\n")
+        f.write("  db_data: {}\n")
+    #close the file docker-compose.yml
+        f.close()
+    #create a file named .env
+        os.system("touch .env")
+    #open the file .env
+        f = open(".env", "w")
+    #write the following code in the file .env
+        f.write("MYSQL_ROOT_PASSWORD=somewordpress\n")
+        f.write("MYSQL_DATABASE=wordpress\n")
+        f.write("MYSQL_USER=wordpress\n")
+        f.write("MYSQL_PASSWORD=wordpress\n")
+    #close the file .env
+        f.close()
+
+    def create(self):
+        os.system("sudo docker-compose up -d")
+        with open("/etc/hosts","a") as f:
+            f.write("\n127.0.0.1 {}".format(self.siteName))
+
+        print("WordPress site is now running, access it with http://{}".format(self.siteName))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #function to check if the docker and docker compose are prsent or not
 
 #without using subprocess
