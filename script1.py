@@ -1,7 +1,6 @@
 #Check if `docker` and `docker-compose` is installed on the system. If not present, install the missing packages.
 
 import os
-import subprocess
 
 '''
 os module - help us to interact with the OS of the system and perform OS operations like listing directories, manipulating paths, and executing system commands.
@@ -100,3 +99,28 @@ def create_wordpress_site():
     f.write("MYSQL_PASSWORD=wordpress\n")
     #close the file .env
     f.close()
+
+    os.system("sudo docker-compose up -d")
+
+    #ask for site name and add it to the /etc/hosts 
+    site_name=input()
+    with open("/etc/hosts","a") as h:
+        h.write("\n127.0.0.1 {}".format(site_name))
+    print("please open https://{} in your browser to access the site".format(site_name))
+
+
+def enable():
+    check_docker_docker_compose()
+    create_wordpress_site()
+
+#function to enable and enable the site
+def enable():
+    os.system("sudo docker-compose up -d")
+
+def disable():
+    os.system("sudo docker-compose down")
+
+def delete():
+    os.system("sudo docker-compose down")
+    os.system("sudo sed -i /{}/d /etc/hosts".format(site_name))#to get we have to make them to global value
+
