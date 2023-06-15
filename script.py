@@ -21,7 +21,7 @@ class Check_Docker_and_DockerCompose:
             os.system("sh get-docker.sh")
             print("Docker is installed on the system")
             os.remove("get-docker.sh")
-    #check if docker-compose is installed or not
+            #check if docker-compose is installed or not
         if os.system("docker-compose --version") == 0:
             print("Docker-compose is already installed on the system")
         else:
@@ -39,7 +39,7 @@ class create_WordPress_site:
         os.chdir("wordpress")
         os.system("touch docker-compose.yml")
         f = open("docker-compose.yml", "w")
-    #compose file
+        #compose file
         f.write("version: '3'\n")
         f.write("services:\n")
         f.write("  db:\n")
@@ -47,8 +47,8 @@ class create_WordPress_site:
         f.write("    restart: always\n")
         f.write("    environment:\n")
         f.write("      MYSQL_RANDOM_ROOT_PASSWORD: 1\n")
-        f.write("      MYSQL_DATABASE: wordpress\n")
-        f.write("      MYSQL_USER: wordpress\n")
+        f.write("      MYSQL_DATABASE: {self.site_name}_db\n")
+        f.write("      MYSQL_USER: {self.site_name}_user\n")
         f.write("      MYSQL_PASSWORD: wordpress\n")
         f.write("    volumes:\n")
         f.write("      - db_data:/var/lib/mysql\n")
@@ -61,26 +61,26 @@ class create_WordPress_site:
         f.write("      - '8080:80'\n")
         f.write("    environment:\n")
         f.write("      WORDPRESS_DB_HOST: db:3306\n")
-        f.write("      WORDPRESS_DB_USER: wordpress\n")
+        f.write("      WORDPRESS_DB_USER: {self.site_name}_user\n")
         f.write("      WORDPRESS_DB_PASSWORD: wordpress\n")
-        f.write("      WORDPRESS_DB_NAME: wordpress\n")
+        f.write("      WORDPRESS_DB_NAME: {self.site_name}_db\n")
         f.write("    volumes:\n")
         f.write("      - wordpress:/var/www/html\n")
         f.write("volumes:\n")
         f.write("  db_data:\n")
         f.write("  wordpress:\n")
-    #close the file docker-compose.yml
+        #close the file docker-compose.yml
         f.close()
-    #create a file named .env
+        #create a file named .env
         os.system("touch .env")
-    #open the file .env
+        #open the file .env
         f = open(".env", "w")
-    #write the following code in the file .env
-        f.write("MYSQL_ROOT_PASSWORD=somewordpress\n")
-        f.write("MYSQL_DATABASE=wordpress\n")
-        f.write("MYSQL_USER=wordpress\n")
+        #write the following code in the file .env
+        f.write("MYSQL_RANDOM_ROOT_PASSWORD= 1\n")
+        f.write("MYSQL_DATABASE={self.site_name}_db\n")
+        f.write("MYSQL_USER={self.site_name}_user\n")
         f.write("MYSQL_PASSWORD=wordpress\n")
-    #close the file .env
+        #close the file .env
         f.close()
 
     def create(self):
@@ -108,7 +108,7 @@ class EnableDisable_or_DeleteSite:
         os.chdir("wordpress")
         subprocess.run(["docker-compose", "down"])
         #os.system("sudo rm -rf {}".format(self.siteName))
-        #os.system("cd ..")
+        os.system("cd ..")
         os.system("sudo rm -rf wordpress/")
         os.system("sudo sed -i /{}/d /etc/hosts".format(self.siteName))
 
@@ -117,19 +117,19 @@ def main():
     parser = argparse.ArgumentParser(description='Create, enable, disable, or delete a WordPress site using Docker')
     subparsers = parser.add_subparsers(dest='command')
 
-    # Command: create
+    # for command create
     create_parser = subparsers.add_parser('create', help='Create a new WordPress site')
     create_parser.add_argument('site_name', help='Name of the site')
     
-    # Command: enable
+    # for command enable
     enable_parser = subparsers.add_parser('enable', help='Enable a WordPress site')
     enable_parser.add_argument('site_name', help='Name of the site')
     
-    # Command: disable
+    # for command disable
     disable_parser = subparsers.add_parser('disable', help='Disable a WordPress site')
     disable_parser.add_argument('site_name', help='Name of the site')
     
-    # Command: delete
+    # for command delete
     delete_parser = subparsers.add_parser('delete', help='Delete an existing WordPress site')
     delete_parser.add_argument('site_name', help='Name of the site')
 
