@@ -130,25 +130,38 @@ class EnableDisable_or_DeleteSite:
         os.system("sudo sed -i /{}/d /etc/hosts".format(self.siteName))
 
 def main():
-    parser = argparse.ArgumentParser(description="Create a WordPress site using the latest WordPress Version")
-    parser.add_argument("siteName", help="Site name")
-    parser.add_argument("-c", "--create", help="Create a WordPress site using the latest WordPress Version", action="store_true")
-    parser.add_argument("-e", "--enable", help="Enable the site (start the containers)", action="store_true")
-    parser.add_argument("-d", "--disable", help="Disable the site (stop the containers)", action="store_true")
-    parser.add_argument("-D", "--delete", help="Delete the site (delete the containers and local files)", action="store_true")
+    parser = argparse.ArgumentParser(description='Create, enable, disable, or delete a WordPress site using Docker')
+    subparsers = parser.add_subparsers(dest='command')
+
+    # Command: to create
+    create_parser = subparsers.add_parser('create', help='Create a new WordPress site')
+    create_parser.add_argument('site_name', help='Name of the site')
+
+    # Command: to enable
+    enable_parser = subparsers.add_parser('enable', help='Enable a WordPress site')
+    enable_parser.add_argument('site_name', help='Name of the site')
+
+    # Command: to disable
+    disable_parser = subparsers.add_parser('disable', help='Disable a WordPress site')
+    disable_parser.add_argument('site_name', help='Name of the site')
+
+    # Command: to delete
+    delete_parser = subparsers.add_parser('delete', help='Delete an existing WordPress site')
+    delete_parser.add_argument('site_name', help='Name of the site')
+
     args = parser.parse_args()
 
-    if args.create:
-        Check_Docker_and_DockerCompose().ispresent()
-        create_WordPress_site(args.siteName).create()
-    elif args.enable:
-        EnableDisable_or_DeleteSite(args.siteName).enable()
-    elif args.disable:
-        EnableDisable_or_DeleteSite(args.siteName).disable()
-    elif args.delete:
-        EnableDisable_or_DeleteSite(args.siteName).delete()
+    if args.command == 'create':
+      Check_Docker_and_DockerCompose().ispresent()
+      create_WordPress_site(args.site_name).create()
+    elif args.command == 'enable':
+        EnableDisable_or_DeleteSite(args.site_name).enable()
+    elif args.command == 'disable':
+        EnableDisable_or_DeleteSite(args.site_name).disable()
+    elif args.command == 'delete':
+        EnableDisable_or_DeleteSite(args.site_name).delete()
     else:
-        print("Please provide a subcommand, use -h or --help for help")
+        parser.print_help()
 
 if __name__=="__main__":
     main()
