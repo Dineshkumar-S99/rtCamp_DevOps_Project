@@ -1,17 +1,9 @@
-#Check if `docker` and `docker-compose` is installed on the system. If not present, install the missing packages.
+#!/usr/bin/env python3
 
 import os
 import argparse
 import webbrowser
-
-'''
-os module - help us to interact with the OS of the system and perform OS operations like listing directories, manipulating paths, and executing system commands.
-
-subprocess module: Allows the execution of system commands from within a Python script and provides facilities for running subprocesses, capturing their output, and managing input/output streams.
-Why we use it: We use the subprocess module to interact with external programs, execute system commands, and manage subprocesses within our Python script. 
-It enables us to integrate with the underlying system and perform tasks like running Docker commands, installing packages, or managing system processes.'''
-
-
+import subprocess
 
 #Create class to check docker and docker present or not
 class Check_Docker_and_DockerCompose:
@@ -39,30 +31,15 @@ class Check_Docker_and_DockerCompose:
             print("Docker-compose is installed on the system")
 
 
-'''
-os.system("curl -fsSL https://get.docker.com -o get-docker.sh")
-os.system("sh get-docker.sh")
-
-here -fsSL stands for 
-  -f = fail silently, 
-  -s = silent mode, 
-  -S = show error messages, 
-  -L = follow redirects
-
-  -o stands for output
-  sh stands for shell
-
-here get-docker.sh is the file which we are downloading from the url https://get.docker.com and saving it as get-docker.sh and then we are running the file get-docker.sh'''
-
-
 class create_WordPress_site:
     def __init__(self,site_name):
         self.siteName = site_name
         os.system("mkdir wordpress")
+        os.system("cp -r s1.py wordpress/")
         os.chdir("wordpress")
         os.system("touch docker-compose.yml")
         f = open("docker-compose.yml", "w")
-    
+    #compose file
         f.write("version: '3'\n")
         f.write("services:\n")
         f.write("  db:\n")
@@ -107,50 +84,56 @@ class create_WordPress_site:
         f.close()
 
     def create(self):
-        os.system("sudo docker-compose up -d")
+        subprocess.run(["docker-compose", "up", "-d"])
         with open("/etc/hosts","a") as f:
             f.write("\n127.0.0.1 {}".format(self.siteName))
 
-        print("WordPress site is now running, access it with http://{}".format(self.siteName))
-        webbrowser.open("https://{}/8000")
+        print("WordPress site is now running, access it with http://{}:8080".format(self.siteName))
+        webbrowser.open("https://{}/8080")
 
 class EnableDisable_or_DeleteSite:
     def __init__(self,site_name):
         self.siteName=site_name
 
     def enable(self):
-        os.system("sudo docker-compose up -d")
+        os.chdir("wordpress")
+        subprocess.run(["docker-compose", "start"])
+        print("WordPress site is now running, access it with http://{}:8080".format(self.siteName))
 
     def disable(self):
-        os.system("sudo docker-compose down")
+        os.chdir("wordpress")
+        subprocess.run(["docker-compose", "stop"])
 
     def delete(self):
-        os.system("sudo docker-compose down")
-        os.system("sudo rm -rf {}".format(self.siteName))
+        os.chdir("wordpress")
+        subprocess.run(["docker-compose", "down"])
+        #os.system("sudo rm -rf {}".format(self.siteName))
+        #os.system("cd ..")
+        os.system("sudo rm -rf wordpress/")
         os.system("sudo sed -i /{}/d /etc/hosts".format(self.siteName))
+
 
 def main():
     parser = argparse.ArgumentParser(description='Create, enable, disable, or delete a WordPress site using Docker')
     subparsers = parser.add_subparsers(dest='command')
 
-    # Command: to create
+    # Command: create
     create_parser = subparsers.add_parser('create', help='Create a new WordPress site')
     create_parser.add_argument('site_name', help='Name of the site')
-
-    # Command: to enable
+    
+    # Command: enable
     enable_parser = subparsers.add_parser('enable', help='Enable a WordPress site')
     enable_parser.add_argument('site_name', help='Name of the site')
-
-    # Command: to disable
+    
+    # Command: disable
     disable_parser = subparsers.add_parser('disable', help='Disable a WordPress site')
     disable_parser.add_argument('site_name', help='Name of the site')
-
-    # Command: to delete
+    
+    # Command: delete
     delete_parser = subparsers.add_parser('delete', help='Delete an existing WordPress site')
     delete_parser.add_argument('site_name', help='Name of the site')
 
     args = parser.parse_args()
-
     if args.command == 'create':
       Check_Docker_and_DockerCompose().ispresent()
       create_WordPress_site(args.site_name).create()
