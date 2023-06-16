@@ -1,16 +1,25 @@
 # rtCamp_DevOps_Project
 This repo will contain the scripts and other md for the project given by rtCamp
 
-# Task
-# Description
 
-Index
+### Index
+- [Task](#Task)
+- [How to run the script](#How-to-run-the-script)
+- [pre-requisite](#pre-requisite)
+- [Step 1: check if docker and docker compose files are present](#Step-1:-check-if-docker-and-docker-compose-files-are-present)
+- [Step 2: to create the WordPress site using latest version of WordPress, using LEMP stack by writing docker-compose file](#Step-2:-to-create-the-WordPress-site-using-latest-version-of-WordPress,-using-LEMP-stack-by-writing-docker-compose-file)
+- [Step 3: Adding a method create, that will trigger the build and start the containers for the wordpress site](#Step-3:-Adding-a-method-create,-that-will-trigger-the-build-and-start-the-containers-for-the-wordpress-site)
+- [Step 4: option to Enable, Disable and Delete the site](#Step-4:-option-to-Enable,-Disable-and-Delete-the-site)
+- [Step 5: parsing the arguments from the terminal](#Step-5:-parsing-the-arguments-from-the-terminal)
+- [Extras and room for improvements](#Extras-and-room-for-improvements)
+
 
 # Task
 
 To create a command-line script, preferably in Bash, PHP, Node, or Python to perform the following tasks:
 
-- tasks and guidelines
+<details>
+<summary>tasks and guidelines</summary>
     1. Check if `docker` and `docker-compose` is installed on the system. If not present, install the missing packages.
     2. The script should be able to create a WordPress site using the latest WordPress Version. Please provide a way for the user to provide the site name as a command-line argument.
     3. It must be a LEMP stack running inside containers (Docker) and a docker-compose file is a must.
@@ -24,6 +33,8 @@ To create a command-line script, preferably in Bash, PHP, Node, or Python to per
     - **CLIG Guidelines ➞** Please follow [Command Line Interface Guidelines](https://clig.dev/).
     - **Source Code Hosting** ➞ You must use GitHub *(recommended)* or GitLab for source code hosting.
     - **Readme.md** ➞ Your must have a very well written readme describing how to install your script, how to run different command & sub-commands in markdown format.
+</details>
+
 
 ## How to run the script
 
@@ -297,7 +308,7 @@ if __name__=="__main__":  #this condition will make sure that main function runs
     main() #calling the main function.
 ```
 
-### Extras and room for improvements;
+### Extras and room for improvements:
 
 we can still able to reduce the number of lines of code, if we want yes there is room for improvement and optimization, 
 
