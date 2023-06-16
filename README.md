@@ -7,9 +7,9 @@ This repo will contain the scripts and other md for the project given by rtCamp
 - [How to run the script](#How-to-run-the-script)
 - [pre-requisite](#pre-requisite)
 - [Step 1: check if docker and docker compose files are present](#Step-1:-check-if-docker-and-docker-compose-files-are-present)
-- [Step 2: to create the WordPress site using latest version of WordPress, using LEMP stack by writing docker-compose file](#Step-2:-to-create-the-WordPress-site-using-latest-version-of-WordPress,-using-LEMP-stack-by-writing-docker-compose-file)
-- [Step 3: Adding a method create, that will trigger the build and start the containers for the wordpress site](#Step-3:-Adding-a-method-create,-that-will-trigger-the-build-and-start-the-containers-for-the-wordpress-site)
-- [Step 4: option to Enable, Disable and Delete the site](#Step-4:-option-to-Enable,-Disable-and-Delete-the-site)
+- [Step 2: to create the WordPress site using latest version of WordPress, using LEMP stack by writing docker-compose file](#Step-2:-to-create-the-WordPress-site-using-latest-version-of-WordPress-using-LEMP-stack-by-writing-docker-compose-file)
+- [Step 3: Adding a method create, that will trigger the build and start the containers for the wordpress site](#Step-3:-Adding-a-method-create-that-will-trigger-the-build-and-start-the-containers-for-the-wordpress-site)
+- [Step 4: option to Enable, Disable and Delete the site](#Step-4:-option-to-Enable-Disable-and-Delete-the-site)
 - [Step 5: parsing the arguments from the terminal](#Step-5:-parsing-the-arguments-from-the-terminal)
 - [Extras and room for improvements](#Extras-and-room-for-improvements)
 
